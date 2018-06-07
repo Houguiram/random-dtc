@@ -7,9 +7,16 @@ lastquote=$(curl -s https://danstonchat.com/latest.html \
   | grep -Po -m 1 '\d*(?=\.html)' \
   | head -1)
 
-randomID=$(( $RANDOM % $lastquote))
+displayedquote=""
 
-curl -s https://danstonchat.com/$randomID.html \
-  | hxnormalize -x \
-  | hxselect -s '\n' 'div.item-content' \
-  | w3m -dump -cols 2000 -T 'text/html' \
+while  [[  -z  $displayedquote  ]]
+do
+	randomID=$(( $RANDOM % $lastquote))
+	
+	displayedquote=$(curl -s https://danstonchat.com/$randomID.html \
+	  | hxnormalize -x \
+	  | hxselect -s '\n' 'div.item-content' \
+	  | w3m -dump -cols 2000 -T 'text/html' )
+done 
+
+echo "$displayedquote"
