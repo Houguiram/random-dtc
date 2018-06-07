@@ -15,7 +15,7 @@ do
 	
 	displayedquote=$(curl -s https://danstonchat.com/$randomID.html \
 	  | hxnormalize -x \
-	  | hxselect -s '\n' 'div.item-content' \
+	  | hxselect 'div.item-content' \
 	  | w3m -dump -cols 2000 -T 'text/html' )
 done 
 
