@@ -4,7 +4,7 @@ exec 2>/dev/null
 colorAliases () {
 	colored=""
 	while read -r line; do
-		    colored=$colored"\n"$(echo "$line" | sed "s/^</\\\033[1;31m</" | sed "s/>/>\\\033[0m/" | sed "s/\(^.*:.*$\)/\\\033[1;31m\1/" | sed "s/:/:\\\033[0m/" )
+		    colored=$colored$(echo "$line" | sed "s/^</\\\033[1;31m</" | sed "s/>/>\\\033[0m/" | sed "s/\(^.*:.*$\)/\\\033[1;31m\1/" | sed "s/:/:\\\033[0m/" )"\n"
 	done <<< "$1"
 
 	echo "$colored"
@@ -43,11 +43,8 @@ done
 
 if [ "$COLOR" = "1" ] 
 then
-	coloredquote=$(colorAliases "$displayedquote")
-	echo -e "$coloredquote"
-	exit 0
+	displayedquote=$(colorAliases "$displayedquote")
 fi
-
 
 echo -e "$displayedquote"
 
