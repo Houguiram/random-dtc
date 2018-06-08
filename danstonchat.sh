@@ -4,8 +4,7 @@ exec 2>/dev/null
 lastquote=$(curl -s https://danstonchat.com/latest.html \
   | hxnormalize -x \
   | hxselect 'div.item h3' \
-  | grep -Po -m 1 '\d*(?=\.html)' \
-  | head -1)
+  | grep -Po -m 1 '\d*(?=\.html)' )
 
 displayedquote=""
 
