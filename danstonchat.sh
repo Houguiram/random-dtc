@@ -20,3 +20,5 @@ do
 done 
 
 echo "$displayedquote"
+
+exit 0
