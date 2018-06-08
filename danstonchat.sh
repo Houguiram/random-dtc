@@ -1,12 +1,22 @@
 #!/bin/bash
 exec 2>/dev/null
 
-while getopts l option
+colorAliases () {
+	colored=""
+	while read -r line; do
+		    colored=$colored"\n"$(echo "$line" | sed "s/^</\\\033[1;31m</" | sed "s/>/>\\\033[0m/" | sed "s/\(^.*:.*$\)/\\\033[1;31m\1/" | sed "s/:/:\\\033[0m/" )
+	done <<< "$1"
+
+	echo "$colored"
+}
+
+while getopts lc option
 do
-case "${option}"
-in
-l) LAST=1;;
-esac
+	case "${option}"
+	in
+		l) LAST=1;;
+		c) COLOR=1;;
+	esac
 done
 
 lastquote=$(curl -s https://danstonchat.com/latest.html \
@@ -15,8 +25,6 @@ lastquote=$(curl -s https://danstonchat.com/latest.html \
   | grep -Po -m 1 '\d*(?=\.html)' )
 
 displayedquote=""
-
-
 
 while  [[  -z  $displayedquote  ]]
 do
@@ -33,6 +41,14 @@ do
 	  | w3m -dump -cols 2000 -T 'text/html' )
 done 
 
-echo "$displayedquote"
+if [ "$COLOR" = "1" ] 
+then
+	coloredquote=$(colorAliases "$displayedquote")
+	echo -e "$coloredquote"
+	exit 0
+fi
+
+
+echo -e "$displayedquote"
 
 exit 0
