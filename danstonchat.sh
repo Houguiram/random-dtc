@@ -10,12 +10,13 @@ colorAliases () {
 	echo "$colored"
 }
 
-while getopts lc option
+while getopts lci: option
 do
 	case "${option}"
 	in
 		l) LAST=1;;
 		c) COLOR=1;;
+		i) SELECTED=${OPTARG};;
 	esac
 done
 
@@ -29,8 +30,11 @@ displayedquote=""
 while  [[  -z  $displayedquote  ]]
 do
 	if [ "$LAST" = "1" ]
-	then
+	then 
 		ID=$lastquote
+	elif [ -n "${SELECTED+set}" ]
+	then
+		ID=$SELECTED
 	else	
 		ID=$(( $RANDOM % $lastquote))
 	fi
