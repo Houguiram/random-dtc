@@ -4,11 +4,24 @@ exec 2>/dev/null
 colorAliases () {
 	colored=""
 	while read -r line; do
+		case "${line:0:1}" in
+		"<")
+			patternIn="s/^</\\\033[1;31m</"
+			patternOut="s/>/>\\\033[0m/"
+			;;
+		"[")
+			patternIn="s/^\[/\\\033[1;31m\[/"
+			patternOut="s/\]/\]\\\033[0m/"
+			;;
+		*)
+			patternIn="s/\(^.*:.*$\)/\\\033[1;31m\1/"
+			patternOut="s/:/:\\\033[0m/"
+			;;
+		esac
+
 		colored=$colored$(echo "$line" \
-			| sed "s/^</\\\033[1;31m</" \
-			| sed "s/>/>\\\033[0m/" \
-			| sed "s/\(^.*:.*$\)/\\\033[1;31m\1/" \
-			| sed "s/:/:\\\033[0m/" )"\n"
+			| sed "$patternIn" \
+			| sed "$patternOut" )"\n"
 	done <<< "$1"
 
 	echo "$colored"
