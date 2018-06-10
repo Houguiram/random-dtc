@@ -13,6 +13,10 @@ colorAliases () {
 			patternIn="s/^\[/\\\033[1;31m\[/"
 			patternOut="s/\]/\]\\\033[0m/"
 			;;
+		"*")
+			patternIn="s/\*/\\\033[1;31m*/"
+			patternOut="s/\*/*\\\033[0m/"
+			;;
 		*)
 			patternIn="s/\(^.*:.*$\)/\\\033[1;31m\1/"
 			patternOut="s/:/:\\\033[0m/"
