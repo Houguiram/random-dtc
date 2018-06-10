@@ -4,7 +4,11 @@ exec 2>/dev/null
 colorAliases () {
 	colored=""
 	while read -r line; do
-		    colored=$colored$(echo "$line" | sed "s/^</\\\033[1;31m</" | sed "s/>/>\\\033[0m/" | sed "s/\(^.*:.*$\)/\\\033[1;31m\1/" | sed "s/:/:\\\033[0m/" )"\n"
+		colored=$colored$(echo "$line" \
+			| sed "s/^</\\\033[1;31m</" \
+			| sed "s/>/>\\\033[0m/" \
+			| sed "s/\(^.*:.*$\)/\\\033[1;31m\1/" \
+			| sed "s/:/:\\\033[0m/" )"\n"
 	done <<< "$1"
 
 	echo "$colored"
@@ -21,11 +25,11 @@ do
 done
 
 lastquote=$(curl -s https://danstonchat.com/latest.html \
-  | hxnormalize -x \
-  | hxselect 'div.item h3' \
-  | grep -Po -m 1 '\d*(?=\.html)' \
-  | head -n1 \
-  | awk '{print $1;}')
+	| hxnormalize -x \
+	| hxselect 'div.item h3' \
+	| grep -Po -m 1 '\d*(?=\.html)' \
+	| head -n1 \
+	| awk '{print $1;}')
 
 displayedquote=""
 
@@ -42,9 +46,9 @@ do
 	fi
 	
 	displayedquote=$(curl -s https://danstonchat.com/$ID.html \
-	  | hxnormalize -x \
-	  | hxselect 'div.item-content' \
-	  | w3m -dump -cols 2000 -T 'text/html' )
+		| hxnormalize -x \
+		| hxselect 'div.item-content' \
+		| w3m -dump -cols 2000 -T 'text/html' )
 done 
 
 if [ "$COLOR" = "1" ] 
