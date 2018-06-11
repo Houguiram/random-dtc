@@ -1,16 +1,21 @@
-#!/bin/bash
+#!/bin/bash 
 exec 2>/dev/null
 
 colorAliases () {
 	colored=""
+	declare -A pseudoColors
 	while read -r line; do
 		case "${line:0:1}" in
 		"<")
-			patternIn="s/^</\\\033[1;31m</"
+			pseudo=$(echo $line | grep -o "<.*>")
+			color=$(getPseudoColor "$pseudo")
+			patternIn="s/^</\\\033[\"$color\"m</"
 			patternOut="s/>/>\\\033[0m/"
 			;;
 		"[")
-			patternIn="s/^\[/\\\033[1;31m\[/"
+			pseudo=$(echo $line | grep -o "[.*]")
+			color=$(getPseudoColor "$pseudo")
+			patternIn="s/^\[/\\\033[\"$color\"m\[/"
 			patternOut="s/\]/\]\\\033[0m/"
 			;;
 		"*")
@@ -18,7 +23,9 @@ colorAliases () {
 			patternOut="s/\*/*\\\033[0m/"
 			;;
 		*)
-			patternIn="s/\(^.*:.*$\)/\\\033[1;31m\1/"
+			pseudo=$(echo $line | grep -o "^.*:")
+			color=$(getPseudoColor "$pseudo")
+			patternIn="s/\(^.*:.*$\)/\\\033[\"$color\"m\1/"
 			patternOut="s/:/:\\\033[0m/"
 			;;
 		esac
@@ -29,6 +36,17 @@ colorAliases () {
 	done <<< "$1"
 
 	echo "$colored"
+}
+
+getPseudoColor () {
+	name=$1
+	if [ ${pseudoColors[$name]+_} ]
+	then
+		echo ${pseudoColors[$name]}
+	else
+		pseudoColors[$name]="1;31"
+		echo ${pseudoColors[$name]}
+	fi
 }
 
 while getopts lci: option
